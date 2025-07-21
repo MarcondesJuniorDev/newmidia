@@ -91,20 +91,6 @@ class CourseResource extends Resource
                     ->size(50)
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                Tables\Columns\TextColumn::make('project.title')
-                    ->label('Projetos')
-                    ->badge()
-                    ->color('primary')
-                    ->sortable()
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('category.title')
-                    ->label('Categorias')
-                    ->badge()
-                    ->color('primary')
-                    ->sortable()
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('title')
                     ->label('Título')
                     ->searchable(),
@@ -119,6 +105,20 @@ class CourseResource extends Resource
                         default => 'info',
                     })
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('project.title')
+                    ->label('Projetos')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('category.title')
+                    ->label('Categorias')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_featured')
                     ->label('Destacado')
