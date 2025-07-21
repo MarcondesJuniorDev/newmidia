@@ -47,6 +47,7 @@ class UserResource extends Resource
                     ->label('Senha')
                     ->placeholder('Digite uma senha de pelo menos 8 caracteres')
                     ->minLength(8)
+                    ->maxLength(255)
                     ->password()
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->dehydrated(fn($state) => filled($state))
@@ -57,6 +58,8 @@ class UserResource extends Resource
                     ->label('Confirmação de Senha')
                     ->placeholder('Confirme a senha digitada')
                     ->password()
+                    ->minLength(8)
+                    ->maxLength(255)
                     ->same('password')
                     ->required(fn(string $context): bool => $context === 'create')
                     ->columns(1),
@@ -73,7 +76,7 @@ class UserResource extends Resource
                     ->multiple()
                     ->preload()
                     ->searchable()
-                    ->required(fn(string $context): bool => $context === 'create')
+                    ->required()
                     ->columns(1),
             ])->columns([
                 'sm' => 1,
@@ -141,5 +144,12 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return auth()->user()->hasRole('admin')
+            ? parent::getEloquentQuery()
+            : parent::getEloquentQuery()->whereHas('roles', fn($query) => $query->where('name', '!=', 'admin'));
     }
 }
