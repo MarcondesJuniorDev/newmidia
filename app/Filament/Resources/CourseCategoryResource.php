@@ -23,6 +23,12 @@ class CourseCategoryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-inbox-stack';
     protected static ?string $activeNavigationIcon = 'heroicon-o-inbox-stack';
     protected static ?int $navigationSort = 3;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de categorias';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

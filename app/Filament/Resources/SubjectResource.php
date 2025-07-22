@@ -23,6 +23,12 @@ class SubjectResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
     protected static ?string $activeNavigationIcon = 'heroicon-o-puzzle-piece';
     protected static ?int $navigationSort = 1;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de Componentes Curriculares';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

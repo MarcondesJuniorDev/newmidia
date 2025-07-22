@@ -23,6 +23,13 @@ class ProjectResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-swatch';
     protected static ?string $activeNavigationIcon = 'heroicon-o-swatch';
     protected static ?int $navigationSort = 4;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de Projetos';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

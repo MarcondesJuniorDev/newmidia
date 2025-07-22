@@ -23,6 +23,12 @@ class RoleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-lock-closed';
     protected static ?string $activeNavigationIcon = 'heroicon-o-lock-closed';
     protected static ?int $navigationSort = 2;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de regras';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

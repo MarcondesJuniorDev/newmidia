@@ -23,6 +23,12 @@ class PermissionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-key';
     protected static ?string $activeNavigationIcon = 'heroicon-o-key';
     protected static ?int $navigationSort = 3;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de permissões';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

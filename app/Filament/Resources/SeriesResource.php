@@ -23,6 +23,12 @@ class SeriesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
     protected static ?string $activeNavigationIcon = 'heroicon-o-academic-cap';
     protected static ?int $navigationSort = 6;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de Séries';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

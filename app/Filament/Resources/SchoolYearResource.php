@@ -23,6 +23,12 @@ class SchoolYearResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-calendar';
     protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';
     protected static ?int $navigationSort = 1;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de Anos Letivos';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
