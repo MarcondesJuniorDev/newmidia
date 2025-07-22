@@ -29,6 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration()
+            ->profile()
+            ->unsavedChangesAlerts() // alertar os usuários se eles tentarem navegar para longe de uma página sem salvar suas alterações.
             ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Cyan,
