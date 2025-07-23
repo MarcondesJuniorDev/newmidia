@@ -119,7 +119,6 @@ class CourseResource extends Resource
                     ->label('Projetos')
                     ->badge()
                     ->color('primary')
-                    ->sortable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('category.title')
