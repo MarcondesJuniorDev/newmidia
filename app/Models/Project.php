@@ -15,4 +15,9 @@ class Project extends Model
         'summary',
         'status',
     ];
+
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
 }
