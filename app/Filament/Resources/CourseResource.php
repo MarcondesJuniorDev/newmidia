@@ -23,7 +23,7 @@ class CourseResource extends Resource
     protected static ?string $slug = 'cursos';
     protected static ?string $navigationIcon = 'heroicon-s-bookmark-square';
     protected static ?string $activeNavigationIcon = 'heroicon-o-bookmark-square';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Cursos';
     protected static ?string $cluster = Educational::class;
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;

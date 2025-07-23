@@ -23,7 +23,7 @@ class CourseCategoryResource extends Resource
     protected static ?string $slug = 'categorias';
     protected static ?string $navigationIcon = 'heroicon-s-inbox-stack';
     protected static ?string $activeNavigationIcon = 'heroicon-o-inbox-stack';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de categorias';
     protected static ?string $cluster = Educational::class;
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
