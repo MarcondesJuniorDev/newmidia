@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SubjectResource\Pages;
-use App\Filament\Resources\SubjectResource\RelationManagers;
-use App\Models\Subject;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Subject;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Clusters\Educational;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SubjectResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SubjectResource\RelationManagers;
 
 class SubjectResource extends Resource
 {
@@ -19,11 +21,12 @@ class SubjectResource extends Resource
     protected static ?string $label = 'Componente Curricular';
     protected static ?string $pluralLabel = 'Componentes Curriculares';
     protected static ?string $slug = 'componentes-curriculares';
-    protected static ?string $navigationGroup = 'Gerenciamento de Conteúdo';
     protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
     protected static ?string $activeNavigationIcon = 'heroicon-o-puzzle-piece';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Componentes Curriculares';
+    protected static ?string $cluster = Educational::class;
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {

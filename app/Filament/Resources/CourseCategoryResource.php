@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CourseCategoryResource\Pages;
-use App\Filament\Resources\CourseCategoryResource\RelationManagers;
-use App\Models\CourseCategory;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\CourseCategory;
+use Filament\Resources\Resource;
+use App\Filament\Clusters\Educational;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CourseCategoryResource\Pages;
+use App\Filament\Resources\CourseCategoryResource\RelationManagers;
 
 class CourseCategoryResource extends Resource
 {
@@ -19,11 +21,12 @@ class CourseCategoryResource extends Resource
     protected static ?string $label = 'Categoria';
     protected static ?string $pluralLabel = 'Categorias';
     protected static ?string $slug = 'categorias';
-    protected static ?string $navigationGroup = 'Gerenciamento de Conteúdo';
     protected static ?string $navigationIcon = 'heroicon-s-inbox-stack';
     protected static ?string $activeNavigationIcon = 'heroicon-o-inbox-stack';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de categorias';
+    protected static ?string $cluster = Educational::class;
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {

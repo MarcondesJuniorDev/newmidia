@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjectResource\Pages;
-use App\Filament\Resources\ProjectResource\RelationManagers;
-use App\Models\Project;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Project;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Clusters\Educational;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProjectResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ProjectResource\RelationManagers;
 
 class ProjectResource extends Resource
 {
@@ -19,11 +21,12 @@ class ProjectResource extends Resource
     protected static ?string $label = 'Projeto';
     protected static ?string $pluralLabel = 'Projetos';
     protected static ?string $slug = 'projetos';
-    protected static ?string $navigationGroup = 'Gerenciamento de Conteúdo';
     protected static ?string $navigationIcon = 'heroicon-s-swatch';
     protected static ?string $activeNavigationIcon = 'heroicon-o-swatch';
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Projetos';
+    protected static ?string $cluster = Educational::class;
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {

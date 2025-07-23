@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SeriesResource\Pages;
-use App\Filament\Resources\SeriesResource\RelationManagers;
-use App\Models\Series;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Series;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Clusters\Educational;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SeriesResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SeriesResource\RelationManagers;
 
 class SeriesResource extends Resource
 {
@@ -19,11 +21,12 @@ class SeriesResource extends Resource
     protected static ?string $label = 'Série';
     protected static ?string $pluralLabel = 'Séries';
     protected static ?string $slug = 'series';
-    protected static ?string $navigationGroup = 'Gerenciamento de Conteúdo';
-    protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
-    protected static ?string $activeNavigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-s-square-3-stack-3d';
+    protected static ?string $activeNavigationIcon = 'heroicon-o-square-3-stack-3d';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Séries';
+    protected static ?string $cluster = Educational::class;
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {

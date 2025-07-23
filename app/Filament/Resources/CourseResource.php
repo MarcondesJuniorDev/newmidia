@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CourseResource\Pages;
-use App\Filament\Resources\CourseResource\RelationManagers;
-use App\Models\Course;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Course;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Clusters\Educational;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CourseResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CourseResource\RelationManagers;
 
 class CourseResource extends Resource
 {
@@ -19,11 +21,12 @@ class CourseResource extends Resource
     protected static ?string $label = 'Curso';
     protected static ?string $pluralLabel = 'Cursos';
     protected static ?string $slug = 'cursos';
-    protected static ?string $navigationGroup = 'Gerenciamento de Conteúdo';
     protected static ?string $navigationIcon = 'heroicon-s-bookmark-square';
     protected static ?string $activeNavigationIcon = 'heroicon-o-bookmark-square';
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Cursos';
+    protected static ?string $cluster = Educational::class;
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {
