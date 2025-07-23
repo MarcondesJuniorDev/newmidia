@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Livewire\Component;
 
@@ -35,6 +37,18 @@ class ContactForm extends SimplePage
                     ->email()
                     ->maxLength(255),
 
+                Select::make('subject')
+                    ->label('Assunto')
+                    ->options([
+                        'general' => 'Geral',
+                        'support' => 'Suporte',
+                        'feedback' => 'Feedback',
+                    ])
+                    ->required()
+                    ->default('general')
+                    ->searchable()
+                    ->placeholder('Selecione um assunto'),
+
                 Textarea::make('message')
                     ->label('Mensagem')
                     ->required()
@@ -57,6 +71,14 @@ class ContactForm extends SimplePage
 
     public function send(): void
     {
-        dd($this->form->getState());
+        $data = $this->form->getState();
+
+        Notification::make()
+            ->title('Mensagem enviada com sucesso!')
+            ->body('Obrigado por entrar em contato conosco. Responderemos o mais breve possível.')
+            ->success()
+            ->send();
+
+        $this->form->fill();
     }
 }
