@@ -24,7 +24,7 @@ class ContentSeeder extends Seeder
                 'code' => 'PKG' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'description' => fake()->sentence(10),
                 'tags' => [fake()->word(), fake()->word()],
-                'image' => 'packages/sample.jpg',
+                'image' => 'packages/image' . str_pad(mt_rand(1, 50), 2, '0', STR_PAD_LEFT) . '.jpg',
                 'status' => ['rascunho', 'publicado', 'pendente', 'arquivado'][array_rand(['rascunho', 'publicado', 'pendente', 'arquivado'])],
                 'type' => ['aula', 'tipo2', 'tipo3', 'outro'][array_rand(['aula', 'tipo2', 'tipo3', 'outro'])],
                 'project_id' => 1, // ajuste conforme necessário
@@ -34,7 +34,7 @@ class ContentSeeder extends Seeder
             for ($j = 1; $j <= $contentsCount; $j++) {
                 Content::create([
                     'package_id' => $package->id,
-                    'file' => 'contents/sample' . rand(1, 5) . '.jpg',
+                    'file' => 'contents/image' . str_pad(mt_rand(1, 102), 3, '0', STR_PAD_LEFT) . '.jpg',
                     'title' => 'Content ' . $j . ' of Package ' . $i,
                     'author_id' => $userIds[array_rand($userIds)],
                     'ownership_rights' => 'Copyright (todos os direitos reservados)',
