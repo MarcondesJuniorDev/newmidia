@@ -53,4 +53,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasPermissionTo('access_admin') || $this->hasRole('admin');
     }
+
+    public function contents()
+    {
+        return $this->hasMany(Content::class, 'author_id');
+    }
 }

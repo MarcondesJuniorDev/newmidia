@@ -15,12 +15,25 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PackageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PackageResource\RelationManagers;
+use App\Filament\Resources\PackageResource\RelationManagers\PackageRelationManager;
+use App\Filament\Resources\PackageResource\RelationManagers\ContentsRelationManager;
+use Filament\Tables\Columns\Summarizers\Count;
 
 class PackageResource extends Resource
 {
     protected static ?string $model = Package::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Pacote';
+    protected static ?string $pluralLabel = 'Pacotes';
+    protected static ?string $slug = 'pacotes';
+    protected static ?string $navigationGroup = 'Conteúdo';
+    protected static ?string $navigationIcon = 'heroicon-s-folder-open';
+    protected static ?string $activeNavigationIcon = 'heroicon-o-folder-open';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de pacotes';
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -134,6 +147,14 @@ class PackageResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('contents_count')
+                    ->label('Anexos')
+                    ->badge()
+                    ->color('info')
+                    ->counts('contents')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('project.title')
                     ->label('Projeto')
                     ->searchable()
@@ -229,7 +250,7 @@ class PackageResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ContentsRelationManager::class,
         ];
     }
 

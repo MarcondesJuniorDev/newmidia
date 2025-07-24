@@ -28,4 +28,9 @@ class Package extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function contents()
+    {
+        return $this->hasMany(Content::class);
+    }
 }
