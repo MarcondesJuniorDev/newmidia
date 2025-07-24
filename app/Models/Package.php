@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Package extends Model
 {
@@ -32,5 +33,24 @@ class Package extends Model
     public function contents()
     {
         return $this->hasMany(Content::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($package) {
+            if ($package->isDirty('image')) {
+                if ($package->getOriginal('image')) {
+                    Storage::disk('public')->delete($package->getOriginal('image'));
+                }
+            }
+        });
+
+        static::deleting(function ($package) {
+            if ($package->image) {
+                Storage::disk('public')->delete($package->image);
+            }
+        });
     }
 }
