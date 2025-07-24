@@ -10,6 +10,7 @@ use App\Tables\Columns\ContentPreview;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ContentsRelationManager extends RelationManager
 {
@@ -25,9 +26,19 @@ class ContentsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\FileUpload::make('file')
                     ->label('Arquivo')
+                    ->disk('public')
+                    ->directory('contents')
+                    ->visibility('public')
                     ->required()
-                    ->maxSize(10240) // 10 MB
                     ->acceptedFileTypes(['image/*', 'video/*', 'application/pdf'])
+                    ->getUploadedFileNameForStorageUsing(
+                        fn(TemporaryUploadedFile $file, $record): string =>
+                        now()->format('d-m-Y_H-i-s') . '_pkg-' .
+                            ($record?->package_id ?? 'pkg') . '_cntt-' .
+                            ($record?->id ?? 'new') . '.' .
+                            $file->getClientOriginalExtension()
+                    )
+                    ->downloadable()
                     ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('title')
