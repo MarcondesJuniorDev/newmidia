@@ -58,4 +58,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Content::class, 'author_id');
     }
+
+    public function canAccessChangePassword(): bool
+    {
+        // Apenas permite usuários com a função 'admin' ou com a permissão 'change_password'
+        return $this->hasRole('admin') || $this->hasPermissionTo('change_password');
+    }
 }
