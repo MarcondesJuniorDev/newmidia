@@ -31,6 +31,7 @@ class CustomSeeder extends Seeder
             'update_permissions',
             'delete_permissions',
             'read_permissions',
+            'change_password', // Permissão para mudar a senha
         ];
 
         foreach ($permissions as $permission) {
