@@ -12,12 +12,13 @@ use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Count;
 use App\Filament\Resources\PackageResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PackageResource\RelationManagers;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Filament\Resources\PackageResource\RelationManagers\PackageRelationManager;
 use App\Filament\Resources\PackageResource\RelationManagers\ContentsRelationManager;
-use Filament\Tables\Columns\Summarizers\Count;
 
 class PackageResource extends Resource
 {
@@ -94,9 +95,16 @@ class PackageResource extends Resource
                             ->required(),
                         Forms\Components\FileUpload::make('image')
                             ->label('Imagem')
+                            ->disk('public')
+                            ->directory('packages')
+                            ->visibility('public')
                             ->placeholder('Selecione uma imagem')
                             ->image()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->getUploadedFileNameForStorageUsing(
+                                fn(TemporaryUploadedFile $file, $record): string =>
+                                now()->format('d-m-Y_H-i-s') . '_pkg-' . ($record?->id ?? 'new') . '.' . $file->getClientOriginalExtension()
+                            )
                     ])->grow(false),
                 ])->from('md'),
             ])->columns(1);

@@ -9,6 +9,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -16,8 +18,18 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ContentResource extends Resource
 {
     protected static ?string $model = Content::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Anexo';
+    protected static ?string $pluralLabel = 'Anexos';
+    protected static ?string $slug = 'anexos';
+    protected static ?string $navigationGroup = 'Conteúdo';
+    protected static ?string $navigationIcon = 'heroicon-s-paper-clip';
+    protected static ?string $activeNavigationIcon = 'heroicon-o-paper-clip';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationBadgeTooltip = 'Quantidade de anexos';
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -48,38 +60,54 @@ class ContentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('package_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('file')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('author_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('ownership_rights')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('source_credit')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('license_type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Grid::make()
+                    ->columns(1)
+                    ->schema([
+                        ImageColumn::make('file')
+                            ->disk('public')
+                            ->width(100)
+                            ->height(100)
+                            ->circular()
+                            ->label('Image'),
+                        Tables\Columns\TextColumn::make('title')
+                            ->searchable(),
+                    ]),
             ])
+            ->contentGrid([
+                'md' => 4,
+                'xl' => 6,
+            ])
+            ->paginationPageOptions([12, 24, 36])
+            ->defaultSort('id', 'asc')
             ->filters([
-                //
+                //filtra por autor
+                Tables\Filters\SelectFilter::make('author_id')
+                    ->label('Autor')
+                    ->relationship('author', 'name')
+                    ->placeholder('Selecione um ou mais autores')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
+
+                //filtro por status
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'disponivel' => 'Disponível',
+                        'pendente' => 'Pendente',
+                        'em_fila' => 'Em Fila',
+                        'falhou' => 'Falhou',
+                        'processando' => 'Processando',
+                        'temporariamente_indisponivel' => 'Temporariamente Indisponível',
+                        'aguardando_revisao' => 'Aguardando Revisão',
+                        'descarte' => 'Descarte',
+                    ])
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
