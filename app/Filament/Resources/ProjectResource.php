@@ -23,11 +23,9 @@ class ProjectResource extends Resource
     protected static ?string $slug = 'projetos';
     protected static ?string $navigationIcon = 'heroicon-s-swatch';
     protected static ?string $activeNavigationIcon = 'heroicon-o-swatch';
+    protected static ?string $navigationGroup = 'Educacional';
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Projetos';
-    protected static ?string $cluster = Educational::class;
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

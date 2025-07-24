@@ -23,11 +23,9 @@ class SubjectResource extends Resource
     protected static ?string $slug = 'componentes-curriculares';
     protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
     protected static ?string $activeNavigationIcon = 'heroicon-o-puzzle-piece';
+    protected static ?string $navigationGroup = 'Educacional';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Componentes Curriculares';
-    protected static ?string $cluster = Educational::class;
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

@@ -23,11 +23,9 @@ class SchoolYearResource extends Resource
     protected static ?string $slug = 'anos-letivos';
     protected static ?string $navigationIcon = 'heroicon-s-calendar';
     protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationGroup = 'Educacional';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Anos Letivos';
-    protected static ?string $cluster = Educational::class;
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

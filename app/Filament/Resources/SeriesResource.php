@@ -23,11 +23,9 @@ class SeriesResource extends Resource
     protected static ?string $slug = 'series';
     protected static ?string $navigationIcon = 'heroicon-s-square-3-stack-3d';
     protected static ?string $activeNavigationIcon = 'heroicon-o-square-3-stack-3d';
+    protected static ?string $navigationGroup = 'Educacional';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationBadgeTooltip = 'Quantidade de Séries';
-    protected static ?string $cluster = Educational::class;
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
