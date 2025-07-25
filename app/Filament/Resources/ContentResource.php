@@ -2,18 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ContentResource\Pages;
-use App\Filament\Resources\ContentResource\RelationManagers;
-use App\Models\Content;
+use Log;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Content;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Storage;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Grid;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\ContentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ContentResource\RelationManagers;
 
 class ContentResource extends Resource
 {
@@ -35,23 +38,56 @@ class ContentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('package_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('file')
+                Forms\Components\FileUpload::make('file')
+                    ->label('Arquivo')
+                    ->columnSpanFull()
                     ->required(),
+
                 Forms\Components\TextInput::make('title')
+                    ->label('Título')
                     ->required(),
-                Forms\Components\TextInput::make('author_id')
+                Forms\Components\Select::make('author_id')
+                    ->label('Autor')
+                    ->relationship('author', 'name')
                     ->required()
-                    ->numeric(),
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('package_id')
+                    ->label('Pacote')
+                    ->relationship('package', 'title')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
                 Forms\Components\TextInput::make('ownership_rights')
+                    ->label('Direitos de Propriedade')
                     ->required(),
-                Forms\Components\TextInput::make('source_credit'),
-                Forms\Components\TextInput::make('license_type'),
-                Forms\Components\Textarea::make('tags')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('status')
+
+                Forms\Components\TextInput::make('source_credit')
+                    ->label('Crédito da Fonte')
+                    ->nullable(),
+
+                Forms\Components\TextInput::make('license_type')
+                    ->label('Tipo de Licença')
+                    ->nullable(),
+
+                Forms\Components\TagsInput::make('tags')
+                    ->label('Tags')
+                    ->separator(', ')
+                    ->helperText('Informe palavras-chave para facilitar a busca'),
+
+                Forms\Components\Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'disponivel' => 'Disponível',
+                        'pendente' => 'Pendente',
+                        'em_fila' => 'Em Fila',
+                        'falhou' => 'Falhou',
+                        'processando' => 'Processando',
+                        'temporariamente_indisponivel' => 'Temporariamente Indisponível',
+                        'aguardando_revisao' => 'Aguardando Revisão',
+                        'descarte' => 'Descarte',
+                    ])
                     ->required(),
             ]);
     }
@@ -67,11 +103,43 @@ class ContentResource extends Resource
                             ->disk('public')
                             ->width(100)
                             ->height(100)
-                            ->circular()
-                            ->label('Image'),
+                            ->square()
+                            ->label('Image')
+                            ->extraAttributes(['class' => 'flex flex-col items-center justify-center w-full']),
+
                         Tables\Columns\TextColumn::make('title')
-                            ->searchable(),
-                    ]),
+                            ->searchable()
+                            ->extraAttributes(['class' => 'flex flex-col align-center justify-center font-bold']),
+
+                        Tables\Columns\TextColumn::make('file')
+                            ->label('Extensão')
+                            ->badge()
+                            ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_EXTENSION))
+                            ->searchable()
+                            ->extraAttributes(['class' => 'flex flex-col align-center justify-center']),
+
+                        Tables\Columns\TextColumn::make('file')
+                            ->label('Tamanho')
+                            ->badge()
+                            ->color('warning')
+                            ->formatStateUsing(function ($state) {
+                                $path = storage_path('app/public/' . $state);
+                                if (!file_exists($path)) {
+                                    return 'N/A';
+                                }
+                                $size = filesize($path);
+                                if ($size >= 1073741824) {
+                                    return number_format($size / 1073741824, 2) . ' GB';
+                                } elseif ($size >= 1048576) {
+                                    return number_format($size / 1048576, 2) . ' MB';
+                                } elseif ($size >= 1024) {
+                                    return number_format($size / 1024, 2) . ' KB';
+                                }
+                                return $size . ' B';
+                            })
+                            ->extraAttributes(['class' => 'flex flex-col align-center justify-center']),
+                    ])
+                    ->columnSpan(1),
             ])
             ->contentGrid([
                 'md' => 4,
@@ -107,13 +175,59 @@ class ContentResource extends Resource
                     ->searchable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->extraAttributes(['class' => 'mx-auto flex justify-center items-center']),
+                Tables\Actions\Action::make('download')
+                    ->label('')
+                    ->icon('heroicon-o-folder-arrow-down')
+                    ->action(
+                        function (Content $record) {
+                            $path = storage_path('app/public/' . $record->file);
+                            if (!file_exists($path)) {
+                                return response()->json(['error' => 'File not found'], 404);
+                            }
+                            return response()->download(storage_path('app/public/' . $record->file), $record->title . '.' . pathinfo($record->file, PATHINFO_EXTENSION));
+                        }
+                    )
+                    ->extraAttributes(['class' => 'mx-auto flex justify-center items-center']),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('downloadSelected')
+                        ->label('Download Selecionados')
+                        ->icon('heroicon-o-folder-arrow-down')
+                        ->action(
+                            function (Collection $records) {
+                                $zip = new \ZipArchive();
+                                $zipFileName = 'anexos.zip';
+
+                                if ($zip->open(storage_path('app/public/' . $zipFileName), \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
+                                    foreach ($records as $record) {
+                                        $filePath = Storage::disk('public')->path($record->file);
+
+                                        if (Storage::disk('public')->exists($record->file)) {
+                                            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+
+                                            $safeTitle = preg_replace('/[^A-Za-z0-9_\-]/', '_', $record->title);
+
+                                            $zipEntryName = $safeTitle . ($extension ? ".{$extension}" : '');
+
+                                            $zip->addFile($filePath, $zipEntryName);
+                                        } else {
+                                            Log::error("Arquivo não encontrado: {$filePath}");
+                                        }
+                                    }
+                                    $zip->close();
+                                }
+
+                                return response()->download(storage_path('app/public/' . $zipFileName))->deleteFileAfterSend(true);
+                            }
+                        ),
                 ]),
-            ]);
+            ])
+            ->recordUrl(null);
     }
 
     public static function getRelations(): array
