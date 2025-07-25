@@ -43,12 +43,14 @@ class ContentResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->label('Título')
                     ->required(),
+                    
                 Forms\Components\Select::make('author_id')
                     ->label('Autor')
                     ->relationship('author', 'name')
                     ->required()
                     ->searchable()
                     ->preload(),
+
                 Forms\Components\Select::make('package_id')
                     ->label('Pacote')
                     ->relationship('package', 'title')
