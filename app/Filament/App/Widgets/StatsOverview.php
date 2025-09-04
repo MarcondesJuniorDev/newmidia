@@ -16,7 +16,7 @@ class StatsOverview extends BaseWidget
             // Anexos
             Stat::make('Total Attachments', User::class)
                 ->label('Anexos')
-                ->url('/admin/anexos')
+                ->url('/anexos')
                 ->description("Total de anexos cadastrados no sistema")
                 ->descriptionIcon('heroicon-o-paper-clip', IconPosition::Before)
                 ->chart(
